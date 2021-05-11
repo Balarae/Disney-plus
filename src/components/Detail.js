@@ -1,37 +1,70 @@
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 import styled from 'styled-components'
+import {useParams} from 'react-router-dom'
+import db from '../firebase'
 
 function Detail() {
+    const {id} = useParams();
+    console.log(id)
+
+    // we save the movie data in state coz we only using it once
+    // Redux is for the entire app but useState is for a single component
+    const[movie, setMovie] = useState()
+
+    useEffect(()=>{
+        // Grab movie Info from movie DB
+        db.collection('movies')
+        .doc(id)
+        .get()
+        .then((doc)=>{
+            if (doc.exists) {
+                // save the movie data
+                setMovie(doc.data())
+            }else{
+                // redirect to hompage
+            }
+        })
+
+    },[id])
+    console.log("movie is",movie)
+
     return (
         <Container>
-            <Background>
-                <img src="/images/hero-bcg.jpeg" alt=""/>
-            </Background>
-            <ImageTitle>
-                <img src="/images/logo.png" alt=""/>
-            </ImageTitle>
-            <Controls>
-                <PlayButton>
-                    <img src="/images/play-icon-black.png" alt=""/>
-                    <span>PLAY</span>
-                </PlayButton>
-                <TrailerButton>
-                     <img src="/images/play-icon-white.png" alt=""/>
-                    <span>Trailer</span>
-                </TrailerButton>
-                <AddButton>
-                    <span>+</span>
-                </AddButton>
-                <GroupWatchButton>
-                    <img src="/images/group-icon.png" alt=""/>
-                </GroupWatchButton>
-            </Controls>
-            <SubTitle>
-                2019 + My First Js Project + hardhsit just
-            </SubTitle>
-            <Description>
-                Badagada the legendary nigga, damn there's a way writing code starts to make shit understandable am working hard on perfecting the backend
-            </Description>
+            {movie && (
+                <>
+                <Background>
+                        <img src={movie.backgroundImg} alt="it keeps messing around"  />
+                </Background>
+                <ImageTitle>
+                        <img src={movie.titleImg} alt="Am getting pissed if it doesn't come thru"/>
+                </ImageTitle>
+                <Controls>
+                    <PlayButton>
+                            <img src="/images/play-icon-black.png" alt=""/>
+                            <span>PLAY</span>
+                    </PlayButton>
+                    <TrailerButton>
+                            <img src="/images/play-icon-white.png" alt=""/>
+                            <span>Trailer</span>
+                    </TrailerButton>
+                        <AddButton>
+                            <span>+</span>
+                        </AddButton>
+                        <GroupWatchButton>
+                            <img src="/images/group-icon.png" alt=""/>
+                        </GroupWatchButton>
+                    </Controls>
+                    <SubTitle>
+                        {movie.subTitle}
+                    </SubTitle>
+                    <Description>
+                        {movie.description}
+                    </Description>
+            
+                </>
+                )
+            }
+            
         </Container>
     )
 }

@@ -15,8 +15,11 @@ const movieSlice = createSlice({
 
 })
 
+// Action
 export const {setMovies} = movieSlice.actions;
 
+// specific components of the reducer
 export const selectMovies = (state) => state.movie.movies;
 
+// reducer
 export default movieSlice.reducer
